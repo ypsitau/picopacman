@@ -25,3 +25,8 @@ target_link_libraries(lcd-pacman pico_stdlib hardware_spi hardware_pwm)
 
 # create map/bin/hex file etc.
 pico_add_extra_outputs(lcd-pacman)
+
+target_link_libraries(lcd-pacman jxglib_USBHost)
+target_sources(lcd-pacman PRIVATE jxglib_adapter.cpp)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../pico-jxglib pico-jxglib)
+jxglib_configure_USBHost(lcd-pacman CFG_TUH_HID 3)

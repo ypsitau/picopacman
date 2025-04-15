@@ -26,6 +26,7 @@
 #include "LCDdriver.h"
 #include "graphlib.h"
 #include "pacman2.h"
+#include "jxglib_adapter.h"
 
 // 入力ボタンのビット定義
 #define GPIO_KEYUP 0
@@ -157,7 +158,7 @@ unsigned char startkeycheck(unsigned short n){
 	uint64_t t=to_us_since_boot(get_absolute_time())%16667;
 	while(n--){
 		sleep_us(16667-t);
-		if(!gpio_get(GPIO_KEYSTART)){
+		if(!gpio_get(GPIO_KEYSTART) || jxglib_keycheck() == KEYSTART){
 			return 1;
 		}
 		t=0;
@@ -523,6 +524,7 @@ void keycheck()
 	x=pacman.x/256;
 	y=pacman.y/256;
 	k=~gpio_get_all() & KEYSMASK;
+	if (!k) k = jxglib_keycheck();
 	if(k==KEYUP && (x%8)==0){	//上ボタン
 		if(pacman.dir!=DIR_UP){
 			if(y>=8){
@@ -1928,6 +1930,8 @@ void main() {
 	gpio_init(LCD_RESET);
 	gpio_put(LCD_RESET, 1);
 	gpio_set_dir(LCD_RESET, GPIO_OUT);
+
+	jxglib_init();
 
 	init_graphic(); //液晶利用開始
 	LCD_WriteComm(0x37); //画面中央にするためスクロール設定
