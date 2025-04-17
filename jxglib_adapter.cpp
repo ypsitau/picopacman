@@ -26,7 +26,7 @@ extern "C" uint16_t jxglib_keycheck()
 	static const uint16_t KEYSTART = (1 << GPIO_KEYSTART);
 	static const uint16_t KEYFIRE = (1 << GPIO_KEYFIRE);
 	Tickable::Tick();
-	USBHost::GamePad& gamePad = USBHost::FindGamePad();
+	USBHost::GamePad gamePad(USBHost::FindGenericHID(0x00010005));
 	uint32_t hat = gamePad.Get_HatSwitch();
 	uint32_t lStickHorz = gamePad.Get_LStickHorz();
 	uint32_t lStickVert = gamePad.Get_LStickVert();
